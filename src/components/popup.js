@@ -2,11 +2,10 @@ import React, { useEffect, useState } from "react";
 
 const Popup = () => {
   const [segmentName, setSegmentName] = useState("");
-  const [selectedSchema, setSelectedSchema] = useState([]);
+  const [selectedSchema, setSelectedSchema] = useState([{ label: "First Name", value: "first_name" },
+  { label: "Last Name", value: "last_name" }]);
   const [tempSelectedSchema, setTempSelectedSchema] = useState("");
   const [newSchemaOptions, setNewSchemaOptions] = useState([
-    { label: "First Name", value: "first_name" },
-    { label: "Last Name", value: "last_name" },
     { label: "Gender", value: "gender" },
     { label: "Age", value: "age" },
     { label: "Account Name", value: "account_name" },
@@ -15,54 +14,54 @@ const Popup = () => {
   ]);
 
   const handleSegmentNameChange = (e) => {
-    setSegmentName(e.target.value);
+    setSegmentName(e?.target?.value);
   };
 
-  const handleAddNewSchema = () => {
-    const selectedSchemaOptions = selectedSchema.map((schema) => schema.value);
-    const unselectedOptions = newSchemaOptions.filter(
-      (option) => !selectedSchemaOptions.includes(option.value)
-    );
+  // const handleAddNewSchema = () => {
+  //   const selectedSchemaOptions = selectedSchema.map((schema) => schema.value);
+  //   const unselectedOptions = newSchemaOptions.filter(
+  //     (option) => !selectedSchemaOptions.includes(option.value)
+  //   );
 
-    if (unselectedOptions.length > 0) {
-      setSelectedSchema([...selectedSchema, unselectedOptions[0]]);
-      setNewSchemaOptions(unselectedOptions.slice(1));
-    }
-  };
+  //   if (unselectedOptions.length > 0) {
+  //     setSelectedSchema([...selectedSchema, unselectedOptions[0]]);
+  //     setNewSchemaOptions(unselectedOptions.slice(1));
+  //   }
+  // };
 
-  const handleSchemaChange = (index, e) => {
-    console.log("e", e, e?.target?.value, "index", index);
-    const updatedSelectedSchema = [...selectedSchema];
-    // updatedSelectedSchema[index].value = e?.target?.value;
-    setSelectedSchema(updatedSelectedSchema);
-  };
+  // const handleSchemaChange = (index, e) => {
+  //   console.log("e", e, e?.target?.value, "index", index);
+  //   const updatedSelectedSchema = [...selectedSchema];
+  //   // updatedSelectedSchema[index].value = e?.target?.value;
+  //   setSelectedSchema(updatedSelectedSchema);
+  // };
 
-  const handleSaveSegment = () => {
-    const formattedSchema = selectedSchema.map((schema) => ({
-      [schema.value]: schema.label,
-    }));
+  // const handleSaveSegment = () => {
+  //   const formattedSchema = selectedSchema.map((schema) => ({
+  //     [schema.value]: schema.label,
+  //   }));
 
-    const segmentData = {
-      segment_name: segmentName,
-      schema: formattedSchema,
-    };
+  //   const segmentData = {
+  //     segment_name: segmentName,
+  //     schema: formattedSchema,
+  //   };
 
-    // Send segmentData to the server
-    console.log(segmentData);
+  //   // Send segmentData to the server
+  //   console.log(segmentData);
 
-    // Reset the form
-    setSegmentName("");
-    setSelectedSchema([]);
-    setNewSchemaOptions([
-      { label: "First Name", value: "first_name" },
-      { label: "Last Name", value: "last_name" },
-      { label: "Gender", value: "gender" },
-      { label: "Age", value: "age" },
-      { label: "Account Name", value: "account_name" },
-      { label: "City", value: "city" },
-      { label: "State", value: "state" },
-    ]);
-  };
+  //   // Reset the form
+  //   setSegmentName("");
+  //   setSelectedSchema([]);
+  //   setNewSchemaOptions([
+  //     { label: "First Name", value: "first_name" },
+  //     { label: "Last Name", value: "last_name" },
+  //     { label: "Gender", value: "gender" },
+  //     { label: "Age", value: "age" },
+  //     { label: "Account Name", value: "account_name" },
+  //     { label: "City", value: "city" },
+  //     { label: "State", value: "state" },
+  //   ]);
+  // };
 
   return (
     <div className="w-[30%] absolute right-0 z-20 bg-white h-full">
@@ -78,7 +77,7 @@ const Popup = () => {
           type="text"
           id="segment-name"
           value={segmentName}
-          onChange={handleSegmentNameChange}
+          onChange={(e)=>handleSegmentNameChange(e)}
           className="w-[80%] border-2 border-black m-auto leading-8"
         />
         <lable className="text-[1.2rem]">
@@ -143,16 +142,22 @@ const Popup = () => {
           <div
             className="text-emerald-600 underline"
             onClick={() => {
-              setSelectedSchema((prev) =>
-                prev?.push(
-                  ...newSchemaOptions?.filter(
-                    (item) => item?.value == tempSelectedSchema
-                  )
-                )
-              );
-              setNewSchemaOptions((prev) =>
+              const temp = (newSchemaOptions?.filter(
+                (item) => item?.value == tempSelectedSchema
+              ))
+              console.log('temp',temp)
+              setSelectedSchema((prev)=>{
+                if(Array?.isArray(prev)){
+                  prev?.push(temp[0])
+                }else{
+                  return temp[0]
+                }
+              }).then(
+                setNewSchemaOptions((prev) =>
                 prev?.filter((item) => item?.value !== tempSelectedSchema)
-              );
+              )
+              )
+              
               setTempSelectedSchema("");
             }}
           >
@@ -180,13 +185,13 @@ const Popup = () => {
         <div className="mt-auto bg-slate-300 p-2 flex justify-between  px-[3rem]">
           <button
             className="bg-emerald-400 text-white p-2"
-            onClick={handleSaveSegment}
+            // onClick={handleSaveSegment}
           >
             Save the Segment
           </button>
           <button
             className="bg-white text-red-400 p-2"
-            onClick={handleSaveSegment}
+            // onClick={handleSaveSegment}
           >
             Cancel
           </button>
