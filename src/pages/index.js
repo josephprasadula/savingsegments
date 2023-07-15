@@ -25,7 +25,7 @@ export default function Home() {
         </button>
       </div>
 
-      {showModal && <Popup />}
+      {showModal && <Popup setShowModal={setShowModal} />}
     </main>
   );
 }
